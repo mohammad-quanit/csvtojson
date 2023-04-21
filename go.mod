@@ -1,3 +1,3 @@
-module github.com/mohammad-quanit/csv2json
+module github.com/mohammad-quanit/csv-to-json
 
-go 1.17
+go 1.20
