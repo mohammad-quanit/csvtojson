@@ -7,6 +7,33 @@ import (
 	"testing"
 )
 
+func Test_checkIfValidFile(t *testing.T) {
+	// type args struct {
+	// 	filename string
+	// }
+	tests := []struct {
+		name     string
+		filename string
+		want     bool
+		wantErr  bool
+	}{
+		{"For test.csv", "test.csv", true, false},
+		{"For test.txt", "test.txt", false, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := checkIfValidFile(tt.filename)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("checkIfValidFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("checkIfValidFile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_GetFileData(t *testing.T) {
 	// Defining our test slice. Table driven approach
 	tests := []struct {
@@ -17,11 +44,11 @@ func Test_GetFileData(t *testing.T) {
 	}{
 		// Here we're declaring each unit test input and output data as defined before
 		{"Default parameters", InputFile{"test.csv", "comma", false}, false, []string{"cmd", "test.csv"}},
-		{"No parameters", InputFile{}, true, []string{"cmd"}},
 		{"Semicolon enabled", InputFile{"test.csv", "semicolon", false}, false, []string{"cmd", "--separator=semicolon", "test.csv"}},
 		{"Pretty enabled", InputFile{"test.csv", "comma", true}, false, []string{"cmd", "--pretty", "test.csv"}},
 		{"Pretty and semicolon enabled", InputFile{"test.csv", "semicolon", true}, false, []string{"cmd", "--pretty", "--separator=semicolon", "test.csv"}},
 		{"Separator not identified", InputFile{}, true, []string{"cmd", "--separator=pipe", "test.csv"}},
+		{"No parameters", InputFile{}, true, []string{"cmd"}},
 	}
 
 	for _, tt := range tests {
